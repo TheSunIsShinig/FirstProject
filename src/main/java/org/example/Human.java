@@ -35,6 +35,7 @@ public class Human implements Trade {
         list.remove(x);
         money += x.price;
         historyList.add(x.brand +": sell");
+        System.out.println(name + " sell " + x.brand + " for "+ x.price + " dollars");
     }
 
     public void money(){
