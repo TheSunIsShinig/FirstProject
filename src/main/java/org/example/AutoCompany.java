@@ -13,6 +13,7 @@ public class AutoCompany implements Trade {
     public void buy(Car x){
         list.add(x);
         set.add(x.brand);
+        System.out.println("AutoCompany buy this car");
     }
     @Override
     public void sell(Car x){
@@ -20,7 +21,7 @@ public class AutoCompany implements Trade {
         if(!list.contains(x)){
             set.remove(x.brand);
         }
-        System.out.println("You sold this car");
+        System.out.println("AutoCompany sold this car");
         x.info();
     }
 

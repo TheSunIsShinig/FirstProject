@@ -1,10 +1,6 @@
 package org.example;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import java.io.*;
 
 public class Ship {
@@ -49,13 +45,9 @@ public class Ship {
         File file = new File(filePath);
 
         if (file.exists()) {
-            if (file.delete()) {
-                System.out.println("Файл успішно видалено: " + filePath);
-            } else {
-                System.out.println("Не вдалося видалити файл: " + filePath);
-            }
-        } else {
-            System.out.println("Файл не знайдено: " + filePath);
+            if (file.delete()) {System.out.println("Файл успішно видалено: " + filePath);}
+            else {System.out.println("Не вдалося видалити файл: " + filePath);}
         }
+        else {System.out.println("Файл не знайдено: " + filePath);}
     }
 }
