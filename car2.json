@@ -1,1 +1,10 @@
-{"brand":"MRS","color":"BLACK","price":14000,"year":2020,"isEngineActive":false}
+{
+  "name": "Mark",
+  "brand":"MRS",
+  "color":"BLACK",
+  "isEngineActive":false,
+  "owner": {
+    "a":"b"
+  },
+  "money": "40000"
+}
