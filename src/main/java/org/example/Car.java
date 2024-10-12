@@ -2,10 +2,10 @@ package org.example;
 
 public class Car {
 
-    public String brand;
-    public String color;
-    public int price;
-    public int year;
+    private String brand;
+    private String color;
+    private int price;
+    private int year;
 
     //інкапсуляція-----------------------------------
     private boolean isEngineActive = false;
@@ -18,7 +18,21 @@ public class Car {
         this.price = price;
         this.year = year;
     }
-    //------------------------------------------------
+    //---------------------------------------------------
+
+    //get,set--------------------------------------------
+    void setBrand(String brand){this.brand = brand;}
+    String getBrand(){ return brand;}
+
+    void setColor(String color){this.color = color;}
+    String getColor(){ return color;}
+
+    void setPrice(int price){this.price = price;}
+    int getPrice(){return price;}
+
+    void setYear(int year){this.year = year;}
+    int getYear(){return year;}
+    //-------------------------------------------------
 
     void beep(){System.out.println(brand + " Make 'beep beep'");}
 
