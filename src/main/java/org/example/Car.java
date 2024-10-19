@@ -3,51 +3,51 @@ package org.example;
 public class Car {
 
     private String brand;
+    private String model;
     private String color;
     private int price;
     private int year;
+    private int mileage;
+    private int numberOfOwners;
 
-    //інкапсуляція-----------------------------------
-    private boolean isEngineActive = false;
-    //-----------------------------------------------
-
-    // Конструктор------------------------------------
-    Car(String brand, String color, int price, int year){
+    // Constructor------------------------------------
+    Car(String brand, String model, String color, int price, int year, int mileage, int numberOfOwners){
         this.brand = brand;
+        this.model = model;
         this.color = color;
         this.price = price;
         this.year = year;
+        this.mileage = mileage;
+        this.numberOfOwners = numberOfOwners;
     }
     //---------------------------------------------------
 
     //get,set--------------------------------------------
-    void setBrand(String brand){this.brand = brand;}
-    String getBrand(){ return brand;}
+    public String getBrand(){ return brand;}
+    public void setBrand(String brand){this.brand = brand;}
 
-    void setColor(String color){this.color = color;}
-    String getColor(){ return color;}
+    public String getModel(){return model;}
+    public void setModel(String model){this.model = model;}
 
-    void setPrice(int price){this.price = price;}
-    int getPrice(){return price;}
+    public String getColor(){ return color;}
+    public void setColor(String color){this.color = color;}
 
-    void setYear(int year){this.year = year;}
-    int getYear(){return year;}
+    public int getPrice(){return price;}
+    public void setPrice(int price){this.price = price;}
+
+    public int getYear(){return year;}
+    public void setYear(int year){this.year = year;}
+
+    public int getNumberOfOwners(){return numberOfOwners;}
+    public void setNumberOfOwners(int numberOfOwners){this.numberOfOwners = numberOfOwners;}
+
+    int getMileage(){return mileage;}
+    void setMileage(int mileage){this.mileage = mileage;}
     //-------------------------------------------------
-
-    void beep(){System.out.println(brand + " Make 'beep beep'");}
-
-    void start(){
-        if(isEngineActive){
-            System.out.println("the engine is already running");
-        }
-        else {
-            System.out.println(brand + " Started the engine");
-            isEngineActive = true;
-        }
-    }
 
     void info(){
         System.out.println("Brand: " + brand);
+        System.out.println("Model: " + model);
         System.out.println("Color: " + color);
         if (price == 0){System.out.println("Price: free");}
         else {System.out.println("Price: " + price);}

@@ -1,13 +1,11 @@
 package org.example;
 
-import com.google.gson.Gson;
-import java.io.*;
 import java.util.*;
 
 public class Human implements Trade {
 
-    List<Car> list = new ArrayList<>();
-    LinkedList<String> historyList = new LinkedList<>();
+    private ArrayList<Car> list = new ArrayList<>();
+    private LinkedList<String> historyList = new LinkedList<>();
 
     private String name;
     private int money;
@@ -17,21 +15,28 @@ public class Human implements Trade {
         this.money = money;
     }
 
-    public void setName(String name){
-        this.name = name;
+    private void addCar(Car car){list.add(car);}
+    private void removeCar(Car car){list.remove(car);}
+    private void addPurchaseHistory(String brand){historyList.add(brand);}
+    public void getPurchaseHistory(){
+        for(String x : historyList){
+            System.out.println(x);
+        }
     }
+
     public String getName(){return name;}
+    public void setName(String name){this.name = name;}
 
-    public void setMoney(int money) {this.money = money;}
     public int getMoney(){return money;}
-
+    public void setMoney(int money) {this.money = money;}
 
     @Override
     public void buy(Car x) {
         if(money >= x.getPrice()){
-            list.add(x);
+            addCar(x);
+            x.setNumberOfOwners(x.getNumberOfOwners() + 1);
             money -= x.getPrice();
-            historyList.add(x.getBrand() +": buy");
+            addPurchaseHistory(x.getBrand() +": buy");
             System.out.println(name + " buy " + x.getBrand() + " for "+ x.getPrice() + " dollars");
         }
         else {
@@ -42,15 +47,25 @@ public class Human implements Trade {
 
     @Override
     public void sell(Car x) {
-        list.remove(x);
+        removeCar(x);
         money += x.getPrice();
-        historyList.add(x.getBrand() +": sell");
+        addPurchaseHistory(x.getBrand() +": sell");
         System.out.println(name + " sell " + x.getBrand() + " for "+ x.getPrice() + " dollars");
     }
 
-    public void getPurchaseHistory(){
-        for(String x : historyList){
-            System.out.println(x);
+    public void info(){
+        System.out.println("Name " + name);
+        System.out.println("Money " + money);
+        System.out.println();
+        System.out.println("Car: ");
+        for (Car x: list){
+            System.out.println("Brand: " + x.getBrand());
+            System.out.println("Model: " + x.getModel());
+            System.out.println("Color: " + x.getColor());
+            if (x.getPrice() == 0){System.out.println("Price: free");}
+            else {System.out.println("Price: " + x.getPrice());}
+            System.out.println("Year: " + x.getYear());
+            System.out.println();
         }
     }
 }

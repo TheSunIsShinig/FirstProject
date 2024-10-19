@@ -1,6 +1,8 @@
 package org.example;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import java.io.*;
 
 public class JsonParser<T> {
@@ -32,9 +34,9 @@ public class JsonParser<T> {
         Gson gson = new Gson();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            // Десеріалізуємо JSON у об'єкт Car
             System.out.println("JSON-документ прочитан");
-            return gson.fromJson(reader, type);
+            JsonObject json = gson.fromJson(reader, JsonObject.class);
+            return  gson.fromJson(json.getAsJsonObject(type.getSimpleName()), type);
         } catch (IOException e) {
             System.err.println("Помилка читання з файлу: " + e.getMessage());
             return null;

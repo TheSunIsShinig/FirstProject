@@ -1,10 +1,5 @@
 package org.example;
 
-import com.google.gson.Gson;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.ArrayList;
 
@@ -14,22 +9,35 @@ public class AutoCompany implements Trade {
     private final HashSet<String> set = new HashSet<>();
     private final ArrayList<Car> list = new ArrayList<>();
 
+    private void addBrand(String brand){set.add(brand);}
+    private void removeBrand(String brand){set.remove(brand);}
+    private void addCar(Car car){list.add(car);}
+    private void removeCar(Car car){list.remove(car);}
+
+    private boolean brandContains(String brand){
+        for(Car x: list){
+            if(x.getBrand().equals(brand)){
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public void buy(Car x){
-        list.add(x);
-        set.add(x.getBrand());
+        addCar(x);
+        addBrand(x.getBrand());
         System.out.println("AutoCompany buy this car");
     }
     @Override
     public void sell(Car x){
-        list.remove(x);
-        if(!list.contains(x)){
-            set.remove(x.getBrand());
+        removeCar(x);
+        if(brandContains(x.getBrand())){
+            removeBrand(x.getBrand());
         }
         System.out.println("AutoCompany sold this car");
         x.info();
     }
-
 
     public void brandHave(){
         int i = 1;
@@ -55,5 +63,4 @@ public class AutoCompany implements Trade {
             i++;
         }
     }
-
 }

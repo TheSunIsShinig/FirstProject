@@ -9,21 +9,19 @@ class Main {
         Human human = new Human("Alex", 34300);
         Human human2 = new Human("Viktor", 10);
 
-        //Створенні машини
-        Car car1 = new Car("BMW", "BLACK", 14000, 2020);
-        Car car2 = new Car("BMW", "BLACK", 14000, 2020);
-        Car car3 = new Car("MRS", "BLACK", 14000, 2020);
-        Car car4 = new Car("VW", "BLACK", 14000, 2020);
+        Car car1 = new Car("f","fd","red",12,3,4,1);
+        Car car2 = new Car("f","d","fade orange",2,3,8,1);
+        Car car3 = new Car("g","fd","red",12,3,4,1);
 
-        JsonParser<Car> jparseCar = new JsonParser<>(Car.class);
-        JsonParser<Human> jparseHuman = new JsonParser<>(Human.class);
+        JsonParser<Car> parserCar = new JsonParser<>(Car.class);
+        JsonParser<Human> parserHuman = new JsonParser<>(Human.class);
 
-        jparseHuman.toJson(human2, "human2");
+        Car car4 = parserCar.fromJson("object.json");
+        Human human3 = parserHuman.fromJson("object.json");
 
-        human = jparseHuman.fromJson("human2.json");
-
-        System.out.println(human.getName());
-
+        car4.info();
+        System.out.println();
+        human3.info();
 
     }
 

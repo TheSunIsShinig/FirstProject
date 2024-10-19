@@ -1,4 +1,0 @@
-{"brand":"Porsche",
- "color":"Yellow",
- "price":61000,
- "year":2021}
