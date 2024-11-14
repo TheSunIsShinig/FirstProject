@@ -1,9 +1,10 @@
-package org.example;
+package org.example.models;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.io.*;
+
 
 public class JsonParser<T> {
 

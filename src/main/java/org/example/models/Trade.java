@@ -1,4 +1,5 @@
-package org.example;
+package org.example.models;
+
 
 public interface Trade {
      void buy(Car x);
