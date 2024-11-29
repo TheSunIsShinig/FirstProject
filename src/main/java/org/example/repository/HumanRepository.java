@@ -11,5 +11,5 @@ public interface HumanRepository extends JpaRepository<Human, UUID> {
 
     List<Human> findHumansByName(String name);
 
-    Human findByName(String name);
+    Human findByUsername(String username);
 }
