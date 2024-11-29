@@ -22,41 +22,37 @@ public class Car {
             strategy = GenerationType.AUTO
     )
 
-    @Getter
-    private UUID id;
-    @Setter
-    @Getter
-    private String brand;
-    @Setter
-    @Getter
-    private String model;
-    @Setter
-    @Getter
-    private String color;
-    @Setter
-    @Getter
-    private int price;
-    @Setter
-    @Getter
-    private int year;
-    @Setter
-    @Getter
-    private int mileage;
-
-    @Setter
-    @Getter
-    private int numberOfOwners;
+    @Getter private UUID id;
+    @Setter @Getter private String brand;
+    @Setter @Getter private String model;
+    @Setter @Getter private String color;
+    @Setter @Getter private int price;
+    @Setter @Getter private int year;
+    @Setter @Getter private int mileage;
+    @Setter @Getter private int numberOfOwners;
 
     @Setter
     @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = true)
-    @JsonBackReference // визначаємо зовнішній ключ
+    @JsonBackReference
     private Human owner;
 
+    @Setter
+    @Getter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "autoCompany_id", nullable = true)
+    @JsonBackReference("autoCompanyCarsRef")
+    private AutoCompany autoCompany;
+
     @JsonProperty("owner_id")
-    public UUID getOwnerId() {
+    public UUID getOwnerID() {
         return owner != null ? owner.getId() : null;
+    }
+
+    @JsonProperty("autoCompany_id")
+    public UUID getAutoCompanyID() {
+        return autoCompany != null ? autoCompany.getId() : null;
     }
 
 
@@ -71,15 +67,4 @@ public class Car {
         this.numberOfOwners = numberOfOwners;
     }
     //---------------------------------------------------
-
-    public void info(){
-        System.out.println("Brand: " + brand);
-        System.out.println("Model: " + model);
-        System.out.println("Color: " + color);
-        if (price == 0){System.out.println("Price: free");}
-        else {System.out.println("Price: " + price);}
-        System.out.println("Year: " + year);
-    }
-
-    public void brandInfo (){System.out.println(brand);}
 }

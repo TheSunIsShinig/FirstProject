@@ -43,6 +43,28 @@ public class HumanController {
         return humanService.addNewHuman(human);
     }
 
+    @PostMapping("/{humanID}/buy/{carID}")
+    public ResponseEntity<String> buyCar(@PathVariable("humanID") UUID humanID, @PathVariable("carID") UUID carID){
+        try {
+            humanService.purchaseCar(humanID, carID);
+            return ResponseEntity.ok("purchase is made");
+        }
+        catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/{humanID}/sell/{carID}")
+    public ResponseEntity<String> sellCar(@PathVariable("humanID") UUID humanID, @PathVariable("carID") UUID carID){
+        try {
+            humanService.sellCar(humanID, carID);
+            return ResponseEntity.ok("the car is sold");
+        }
+        catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
     @DeleteMapping("/delete/{id}")
     public void deleteHuman(@PathVariable UUID humanID) {
         humanService.deleteHumanById(humanID);  // Викликаємо сервіс для видалення машини
@@ -50,7 +72,7 @@ public class HumanController {
     }
 
     @PatchMapping("/update/{id}")
-    public ResponseEntity<Human> updateHuman(@PathVariable UUID humanID, @RequestBody Map<String, Object> updates){
+    public ResponseEntity<Human> updateHuman(@PathVariable("id") UUID humanID, @RequestBody Map<String, Object> updates){
         Human updatedHuman = humanService.updateHuman(humanID,updates);
         return ResponseEntity.ok(updatedHuman);
     }
@@ -59,16 +81,5 @@ public class HumanController {
     public ResponseEntity<Human> updateHuman(@PathVariable UUID humanID, @RequestBody Human human){
         Human updatedHuman = humanService.updateAllHuman(humanID,human);
         return ResponseEntity.ok(updatedHuman);
-    }
-
-    @PostMapping("/{humanID}/buy/{carID}")
-    public ResponseEntity<String> buyCar(@PathVariable("humanID") UUID humanID, @PathVariable("carID") UUID carID){
-        try {
-            humanService.purchaseCar(humanID, carID);
-            return ResponseEntity.ok("Покупка здійснена");
-        }
-        catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
     }
 }

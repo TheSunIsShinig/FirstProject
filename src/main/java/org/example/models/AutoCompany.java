@@ -1,13 +1,46 @@
 package org.example.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.util.HashSet;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
-
+@Entity
+@Table(name = "autoCompany")
+@NoArgsConstructor
 public class AutoCompany implements Trade {
 
-    private final HashSet<String> brandSet = new HashSet<>();
-    private final ArrayList<Car> autoCompanyCars = new ArrayList<>();
+    @JsonProperty("autoCompany_id")
+    @Id
+    @GeneratedValue(
+            strategy = GenerationType.AUTO
+    )
+
+    @Getter
+    private UUID id;
+
+    @Getter
+    @Setter
+    public String companyName;
+
+    @Getter
+    @Setter
+    private HashSet<String> brandSet = new HashSet<>();
+
+    @Getter
+    @OneToMany(mappedBy = "autoCompany", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("autoCompanyCarsRef")
+    private List<Car> autoCompanyCars = new ArrayList<>();
+
+    public AutoCompany(String companyName){
+        this.companyName = companyName;
+    }
 
     @Override
     public void buy(Car car){
@@ -17,30 +50,6 @@ public class AutoCompany implements Trade {
     @Override
     public void sell(Car car){
         saleCar(car);
-    }
-
-    public void brandHave(){
-        int i = 1;
-        System.out.println("brand we have:");
-        for(String x : brandSet){
-            System.out.println(i + ")");
-            System.out.println(x);
-            i++;
-        }
-    }
-
-    public void allAutoHave(){
-        int i = 1;
-        System.out.println("Auto we have:");
-        for(Car x : autoCompanyCars){
-            System.out.println(i + ")");
-            System.out.println("brand: " + x.getBrand());
-            System.out.println("color: " + x.getColor());
-            System.out.println("price: " +x.getPrice());
-            System.out.println("year: " +x.getYear());
-            System.out.println();
-            i++;
-        }
     }
 
     private void addBrand(String brand){

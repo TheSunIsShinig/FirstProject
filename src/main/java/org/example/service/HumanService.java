@@ -5,7 +5,9 @@ import org.example.models.Human;
 import org.example.repository.CarRepository;
 import org.example.repository.HumanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -14,16 +16,27 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
-public class HumanService {
+public class HumanService implements UserDetailsService {
 
-    @Autowired
     private final HumanRepository humanRepository;
+    private final CarRepository carRepository;
 
     @Autowired
-    private CarRepository carRepository;
-
     public HumanService(HumanRepository humanRepository, CarRepository carRepository){
         this.humanRepository = humanRepository;
+        this.carRepository = carRepository;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        Human human = humanRepository.findByName(username);
+
+        if(human == null){
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        return new HumanDetails(human);
     }
 
     public List<Human> getAllHumans(){
@@ -35,7 +48,7 @@ public class HumanService {
     }
 
     public List<Human> getByName(String name){
-        return humanRepository.findByName(name);
+        return humanRepository.findHumansByName(name);
     }
 
     public Human addNewHuman (Human human){
@@ -48,13 +61,15 @@ public class HumanService {
     public void deleteHumanById(UUID humanID){
         boolean exists = humanRepository.existsById(humanID);
         if(!exists){
-            throw new IllegalStateException("Human with id " + humanID + " does not exist");
+            throw new IllegalArgumentException("Human with id " + humanID + " does not exist");
         }
         humanRepository.deleteById(humanID);
     }
 
     public Human updateHuman(UUID humanID, @RequestBody Map<String, Object> updates){
+
         Human human = getHumanByID(humanID);
+
         if(updates.containsKey("name")){
             human.setName((String) updates.get("name"));
         }
@@ -74,22 +89,33 @@ public class HumanService {
         return humanRepository.save(human);
     }
 
-    public ResponseEntity<String> purchaseCar(UUID humanID, UUID carID){
-
+    public void purchaseCar(UUID humanID, UUID carID){
         Human human = getHumanByID(humanID);
-        Car car = carRepository.findById(carID).orElseThrow(() -> new IllegalArgumentException("Машина з ID " + carID + " не знайдена"));
-            if(human.getMoney() >= car.getPrice()){
-                human.setMoney(human.getMoney() - car.getPrice());
-                human.buy(car);
-                car.setOwner(human);
-                car.setNumberOfOwners(car.getNumberOfOwners() + 1);
-                humanRepository.save(human);
-                carRepository.save(car);
-                return ResponseEntity.ok("покупка здійснена!");
-            }
-           else {
-                throw new IllegalArgumentException("Недостатньо коштів для покупки");
-            }
+        Car car = carRepository.findById(carID).orElseThrow(() -> new IllegalArgumentException("Car no found with this id: " + carID));
+
+        if(car.getOwnerID() != null){
+            throw new IllegalArgumentException("This car already has an owner");
+        }
+
+        human.buy(car);
+        car.setOwner(human);
+        car.setAutoCompany(null);
+        car.setNumberOfOwners(car.getNumberOfOwners()+1);
+        humanRepository.save(human);
+        carRepository.save(car);
     }
 
+    public void sellCar(UUID humanID, UUID carID){
+        Human human = getHumanByID(humanID);
+        Car car = carRepository.findById(carID).orElseThrow(() -> new IllegalArgumentException("Car no found with this id: " + carID));
+
+        if(car.getOwner() != human){
+            throw new IllegalArgumentException("this car does not belong to this person");
+        }
+
+        human.sell(car);
+        car.setOwner(null);
+        humanRepository.save(human);
+        carRepository.save(car);
+    }
 }

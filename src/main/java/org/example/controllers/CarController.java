@@ -13,25 +13,21 @@ import java.util.UUID;
 @RequestMapping(path = "api/v1/cars")
 public class CarController {
 
-    @Autowired
     private final CarService carService;
 
+    @Autowired
     public CarController( CarService carService){
         this.carService = carService;
     }
 
-    //пошук всіх машин
     @GetMapping("/get")
-    public List<Car> getCars(){
-        return carService.getCars();
-    }
+    public List<Car> getCars(){return carService.getCars();}
 
     @GetMapping("/getByID/{id}")
     public Car getCarByID(@PathVariable("id") UUID carID){
-        return carService.carID(carID);
+        return carService.getCarByID(carID);
     }
 
-    //Пошук по бренду
     @GetMapping("/brand")
     public List<Car> getCarByBrand(@RequestParam String brand){
         return carService.carsBrand(brand);
@@ -52,30 +48,21 @@ public class CarController {
         return carService.carsYearFromTo(from, to);
     }
 
-    @GetMapping("/owner/{id}")
-    public UUID carOwner(@PathVariable("id") UUID CarID){
-       return carService.CarOwner(CarID);
-    }
-
     @GetMapping("/priceRange")
-    public List<Car> carsPriceFromTo(@RequestParam int from, @RequestParam int to){
-        return carService.carsPriceFromTo(from,to);
+    public List<Car> carsPriceFromTo(@RequestParam int min, @RequestParam int max){
+        return carService.carsPriceFromTo(min,max);
     }
 
-
-    //Додавання машин
     @PostMapping("/add")
     public Car createCar(@RequestBody Car car) {
         return carService.addNewCar(car);
     }
 
-    //Видалення машин
     @DeleteMapping("/delete/{id}")
     public void deleteCar(@PathVariable("id") UUID CarID) {
-        carService.deleteCarById(CarID);  // Викликаємо сервіс для видалення машини
+        carService.deleteCarById(CarID);
     }
 
-    //оновлення даних про машину
     @PutMapping("/updateAll/{id}")
     public ResponseEntity<Car> updateAllCar(@PathVariable UUID carID, @RequestBody Car carDetails){
         Car updatedCar = carService.updateAllCar(carID, carDetails);
