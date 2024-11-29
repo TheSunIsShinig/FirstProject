@@ -24,6 +24,10 @@ public class Human implements Trade {
     @JsonProperty("human_id")
     private UUID id;
 
+    @Getter @Setter private String username;
+    @Getter @Setter private String password;
+
+    @Getter
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Car> humanCars = new ArrayList<>();
@@ -31,14 +35,10 @@ public class Human implements Trade {
     @Column(name = "purchase")
     private LinkedList<String> purchaseHistory = new LinkedList<>();
 
-    @Setter
-    @Getter
-    private String name;
-    @Setter
-    @Getter
-    private int money;
+    @Setter @Getter private String name;
+    @Setter @Getter private int money;
 
-    public Human(String name, int money){
+    public Human( String name, int money){
         this.name = name;
         this.money = money;
     }
@@ -58,24 +58,9 @@ public class Human implements Trade {
         saleCar(car);
     }
 
-    private void addCar(Car car){
-        humanCars.add(car);}
-    private void removeCar(Car car){
-        humanCars.remove(car);}
-    private void addPurchaseHistory(String brand){
-        purchaseHistory.add(brand);}
-
-    private boolean hasEnoughMoney(Car car){
-        return money >= car.getPrice();
-    }
-
     private void updateMoney(Car car, boolean isBuying){
         if(isBuying){money -= car.getPrice();}
         else {money += car.getPrice();}
-    }
-
-    private void updateCarOwnerCount(Car car) {
-        car.setNumberOfOwners(car.getNumberOfOwners() + 1);
     }
 
     private void performPurchase(Car car){
@@ -91,9 +76,12 @@ public class Human implements Trade {
         addPurchaseHistory(car.getBrand() +": sell");
         updateMoney(car, false);
     }
-
-    private void notifyInsufficientFunds(){
-        System.out.println(name + " you don't have enough money to buy a car");
-        System.out.println("You have " + money + " dollars");
+    private void addCar(Car car){humanCars.add(car);}
+    private void removeCar(Car car){humanCars.remove(car);}
+    private void addPurchaseHistory(String brand){purchaseHistory.add(brand);}
+    private boolean hasEnoughMoney(Car car){return money >= car.getPrice();}
+    private void updateCarOwnerCount(Car car) {
+        car.setNumberOfOwners(car.getNumberOfOwners() + 1);
     }
+    private void notifyInsufficientFunds(){throw new IllegalArgumentException(name + " you don't have enough money to buy a car");}
 }

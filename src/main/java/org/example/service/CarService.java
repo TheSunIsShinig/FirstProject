@@ -16,11 +16,10 @@ import java.util.UUID;
 @Service
 public class CarService {
 
-    @Autowired
     private final CarRepository carRepository;
-    @Autowired
     private final HumanRepository humanRepository;
 
+    @Autowired
     public CarService(CarRepository carRepository, HumanRepository humanRepository){
         this.carRepository = carRepository;
         this.humanRepository = humanRepository;
@@ -31,7 +30,7 @@ public class CarService {
         return carRepository.findAll();
     }
 
-    public Car carID(UUID carID){
+    public Car getCarByID(UUID carID){
         return carRepository.findById(carID).orElseThrow(()-> new IllegalStateException("Car not found with id" + carID));
     }
 
@@ -39,12 +38,20 @@ public class CarService {
         return carRepository.findByBrand(brand);
     }
 
-    public List<Car> carsPriceFromTo(int from, int to){
-        return carRepository.findCarsByPriceRange(from, to);
+    public List<Car> carsPriceFromTo(int min, int max){
+        if (min < 0) {throw new IllegalArgumentException("Minimum price cannot be negative.");}
+        if (max < 0) {throw new IllegalArgumentException("Maximum price cannot be negative.");}
+        if (min > max) {throw new IllegalArgumentException("Minimum price cannot be greater than maximum price.");}
+
+        return carRepository.findCarsByPriceRange(min, max);
     }
 
-    public List<Car> carsYearFromTo(int from, int to){
-        return carRepository.findCarsByYearRange(from, to);
+    public List<Car> carsYearFromTo(int min, int max){
+        if (min < 0) {throw new IllegalArgumentException("Minimum year cannot be negative.");}
+        if (max < 0) {throw new IllegalArgumentException("Maximum year cannot be negative.");}
+        if (min > max) {throw new IllegalArgumentException("Minimum year cannot be greater than maximum year.");}
+
+        return carRepository.findCarsByYearRange(min, max);
     }
 
     public List<Car> carsModel(String model){
@@ -55,32 +62,27 @@ public class CarService {
         return carRepository.findByYear(year);
     }
 
-
-    public UUID CarOwner(UUID carID){
-        Car car = carID(carID);
-        return car.getOwnerId();
-    }
-
     public Car addNewCar(Car car) {
+        if(car == null){
+            throw new IllegalArgumentException("Car object cannot be null");
+        }
         return carRepository.save(car);
     }
 
-    //?? Питання щодо SOLID. чи тут все правильно?
     public void deleteCarById(UUID carID){
-        Car car = carID(carID);
-        if(car.getId() != null){
-            Human human = humanRepository.findById(car.getOwnerId()).orElseThrow(() -> new IllegalArgumentException("Користувач з ID " + car.getOwnerId() + " не знайдений"));
+        Car car = getCarByID(carID);
+        if(car.getOwner() != null){
+            Human human = humanRepository.findById(car.getOwnerID()).orElseThrow(() -> new IllegalArgumentException("Користувач з ID " + car.getOwnerID() + " не знайдений"));
             human.setMoney(human.getMoney() + car.getPrice());
             humanRepository.save(human);
         }
         carRepository.deleteById(carID);
     }
 
-    // Це якщо треба поміняти всі дані про машину
     @Transactional
     public Car updateAllCar(UUID carID, Car carDetails){
 
-        Car car = carID(carID);
+        Car car = getCarByID(carID);
 
         car.setBrand(carDetails.getBrand());
         car.setModel(carDetails.getModel());
@@ -93,17 +95,16 @@ public class CarService {
         return carRepository.save(car);
     }
 
-    //Це для того щоб змінити поля які потрібно
     public Car updateCar(UUID carID, @RequestBody Map<String, Object> updates){
-        Car car = carID(carID);
+        Car car = getCarByID(carID);
 
         if(updates.containsKey("Brand")){car.setBrand((String) updates.get("Brand"));}
         if(updates.containsKey("Model")){car.setModel((String) updates.get("Model"));}
         if(updates.containsKey("Color")){car.setColor((String) updates.get("Color"));}
         if(updates.containsKey("Price")){car.setPrice((int) updates.get("Price"));}
-        if(updates.containsKey("Year")){car.setPrice((int) updates.get("Year"));}
-        if(updates.containsKey("Mileage")){car.setPrice((int) updates.get("Mileage"));}
-        if(updates.containsKey("NumberOfOwners")){car.setPrice((int) updates.get("NumberOfOwners"));}
+        if(updates.containsKey("Year")){car.setYear((int) updates.get("Year"));}
+        if(updates.containsKey("Mileage")){car.setMileage((int) updates.get("Mileage"));}
+        if(updates.containsKey("NumberOfOwners")){car.setNumberOfOwners((int) updates.get("NumberOfOwners"));}
 
         return carRepository.save(car);
     }
