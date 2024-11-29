@@ -1,6 +1,5 @@
 package org.example.service;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -76,7 +75,7 @@ class HumanServiceTest {
         List<Human> result = underTest.getByName(name);
 
         //Then
-        verify(humanRepository).findByName(name);
+        verify(humanRepository).findByUsername(name);
         assertThat(result).isEqualTo(humans);
     }
 
@@ -91,7 +90,7 @@ class HumanServiceTest {
         List<Human> result = underTest.getByName(name);
 
         //Then
-        verify(humanRepository).findByName(name);
+        verify(humanRepository).findByUsername(name);
         assertThat(result).isEmpty();
     }
 
