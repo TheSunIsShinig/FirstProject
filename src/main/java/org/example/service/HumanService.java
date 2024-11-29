@@ -5,9 +5,13 @@ import org.example.models.Human;
 import org.example.repository.CarRepository;
 import org.example.repository.HumanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -20,6 +24,8 @@ public class HumanService implements UserDetailsService {
 
     private final HumanRepository humanRepository;
     private final CarRepository carRepository;
+
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(13);
 
     @Autowired
     public HumanService(HumanRepository humanRepository, CarRepository carRepository){
@@ -56,6 +62,8 @@ public class HumanService implements UserDetailsService {
         if (human == null) {
             throw new IllegalArgumentException("Human object cannot be null");
         }
+
+        human.setPassword(encoder.encode(human.getPassword()));
         return humanRepository.save(human);
     }
 
@@ -118,5 +126,14 @@ public class HumanService implements UserDetailsService {
         car.setOwner(null);
         humanRepository.save(human);
         carRepository.save(car);
+    }
+
+    public String verify(Human human) {
+        UserDetails userDetails = loadUserByUsername(human.getUsername());
+
+        if (encoder.matches(human.getPassword(), userDetails.getPassword()))
+            return "Success"; // Пароль правильний
+
+        return "Fail"; // Пароль неправильний
     }
 }

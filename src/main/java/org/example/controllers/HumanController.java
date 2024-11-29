@@ -5,6 +5,7 @@ import org.example.service.HumanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,13 +16,12 @@ import java.util.UUID;
 @RequestMapping(path = "api/v1/humans")
 public class HumanController {
 
-    @Autowired
     private final HumanService humanService;
 
+    @Autowired
     public HumanController( HumanService humanService){
         this.humanService = humanService;
     }
-
 
     @GetMapping("/get")
     public List<Human> getHumans(){
@@ -36,6 +36,11 @@ public class HumanController {
     @GetMapping("/name/{name}")
     public List<Human> getHumanName(@PathVariable("name") String name){
         return humanService.getByName(name);
+    }
+
+    @PostMapping("/login")
+    public  String login(@RequestBody Human human){
+        return humanService.verify(human);
     }
 
     @PostMapping("/add")
