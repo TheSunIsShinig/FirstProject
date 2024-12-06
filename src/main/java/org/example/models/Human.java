@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.*;
 
 
@@ -26,21 +25,21 @@ public class Human implements Trade {
 
     @Getter @Setter private String username;
     @Getter @Setter private String password;
+    @Getter @Setter private LinkedList<String> purchaseHistory;
+
 
     @Getter
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Car> humanCars = new ArrayList<>();
 
-    @Column(name = "purchase")
-    private LinkedList<String> purchaseHistory = new LinkedList<>();
-
     @Setter @Getter private String name;
     @Setter @Getter private int money;
 
-    public Human( String name, int money){
+    public Human( String name, int money, LinkedList<String> purchaseHistory){
         this.name = name;
         this.money = money;
+        this.purchaseHistory = purchaseHistory;
     }
 
     @Override
@@ -67,7 +66,6 @@ public class Human implements Trade {
         addCar(car);
         updateCarOwnerCount(car);
         addPurchaseHistory(car.getBrand() +": buy");
-
         updateMoney(car, true);
     }
 
@@ -76,6 +74,7 @@ public class Human implements Trade {
         addPurchaseHistory(car.getBrand() +": sell");
         updateMoney(car, false);
     }
+
     private void addCar(Car car){humanCars.add(car);}
     private void removeCar(Car car){humanCars.remove(car);}
     private void addPurchaseHistory(String brand){purchaseHistory.add(brand);}

@@ -5,9 +5,6 @@ import org.example.models.Human;
 import org.example.repository.CarRepository;
 import org.example.repository.HumanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,13 +21,14 @@ public class HumanService implements UserDetailsService {
 
     private final HumanRepository humanRepository;
     private final CarRepository carRepository;
-
+    private final JWTService jwtService;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(13);
 
     @Autowired
-    public HumanService(HumanRepository humanRepository, CarRepository carRepository){
+    public HumanService(HumanRepository humanRepository, CarRepository carRepository, JWTService jwtService){
         this.humanRepository = humanRepository;
         this.carRepository = carRepository;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -102,9 +100,8 @@ public class HumanService implements UserDetailsService {
         Human human = getHumanByID(humanID);
         Car car = carRepository.findById(carID).orElseThrow(() -> new IllegalArgumentException("Car no found with this id: " + carID));
 
-        if(car.getOwnerID() != null){
+        if(car.getOwnerID() != null)
             throw new IllegalArgumentException("This car already has an owner");
-        }
 
         human.buy(car);
         car.setOwner(human);
@@ -118,9 +115,8 @@ public class HumanService implements UserDetailsService {
         Human human = getHumanByID(humanID);
         Car car = carRepository.findById(carID).orElseThrow(() -> new IllegalArgumentException("Car no found with this id: " + carID));
 
-        if(car.getOwner() != human){
+        if(car.getOwner() != human)
             throw new IllegalArgumentException("this car does not belong to this person");
-        }
 
         human.sell(car);
         car.setOwner(null);
@@ -128,12 +124,12 @@ public class HumanService implements UserDetailsService {
         carRepository.save(car);
     }
 
-    public String verify(Human human) {
-        UserDetails userDetails = loadUserByUsername(human.getUsername());
+    public String verify(Map<String, String> parameters) {
+        UserDetails userDetails = loadUserByUsername(parameters.get("username"));
 
-        if (encoder.matches(human.getPassword(), userDetails.getPassword()))
-            return "Success"; // Пароль правильний
+        if (encoder.matches(parameters.get("password"), userDetails.getPassword()))
+            return jwtService.generateToken(parameters.get("username"));
 
-        return "Fail"; // Пароль неправильний
+        return "Fail";
     }
 }

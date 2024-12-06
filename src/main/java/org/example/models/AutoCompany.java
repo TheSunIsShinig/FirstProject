@@ -22,16 +22,11 @@ public class AutoCompany implements Trade {
             strategy = GenerationType.AUTO
     )
 
-    @Getter
-    private UUID id;
-
-    @Getter
-    @Setter
-    public String companyName;
-
-    @Getter
-    @Setter
-    private HashSet<String> brandSet = new HashSet<>();
+    @Getter private UUID id;
+    @Getter @Setter private String companyName;
+    @Getter @Setter private HashSet<String> brandSet = new HashSet<>();
+    @Getter @Setter private String username;
+    @Getter @Setter private String password;
 
     @Getter
     @OneToMany(mappedBy = "autoCompany", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -73,8 +68,7 @@ public class AutoCompany implements Trade {
         boolean brandExists = autoCompanyCars.stream()
                 .anyMatch(car -> car.getBrand().equals(brand));
 
-        if (!brandExists) {
+        if (!brandExists)
             brandSet.remove(brand);
-        }
     }
 }

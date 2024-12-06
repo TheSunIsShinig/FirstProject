@@ -72,7 +72,7 @@ public class CarService {
     public void deleteCarById(UUID carID){
         Car car = getCarByID(carID);
         if(car.getOwner() != null){
-            Human human = humanRepository.findById(car.getOwnerID()).orElseThrow(() -> new IllegalArgumentException("Користувач з ID " + car.getOwnerID() + " не знайдений"));
+            Human human = humanRepository.findById(car.getOwnerID()).orElseThrow(() -> new IllegalArgumentException("User with ID " + car.getOwnerID() + " not found"));
             human.setMoney(human.getMoney() + car.getPrice());
             humanRepository.save(human);
         }

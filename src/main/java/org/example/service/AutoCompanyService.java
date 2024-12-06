@@ -72,4 +72,17 @@ public class AutoCompanyService {
         }
     }
 
+    public void sellCar(UUID autoCompanyID, UUID carID) {
+        AutoCompany autoCompany = getAutoCompanyByID(autoCompanyID);
+        Car car = carRepository.findById(carID).orElseThrow(()-> new IllegalStateException("Car not found with id" + carID));
+
+        if(car.getAutoCompany() == autoCompany){
+            autoCompany.sell(car);
+            car.setAutoCompany(null);
+            autoCompaniesRepository.save(autoCompany);
+            carRepository.save(car);
+        } else {
+            throw new IllegalArgumentException("the car does not belong to the car company");
+        }
+    }
 }

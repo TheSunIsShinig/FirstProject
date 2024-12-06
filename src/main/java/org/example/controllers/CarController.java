@@ -54,13 +54,16 @@ public class CarController {
     }
 
     @PostMapping("/add")
-    public Car createCar(@RequestBody Car car) {
-        return carService.addNewCar(car);
+    public ResponseEntity<Car> createCar(@RequestBody Car car) {
+        carService.addNewCar(car);
+        return ResponseEntity.ok(car);
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteCar(@PathVariable("id") UUID CarID) {
-        carService.deleteCarById(CarID);
+    public ResponseEntity<String> deleteCar(@PathVariable("id") UUID carID) {
+        Car deletedCar = carService.getCarByID(carID);
+        carService.deleteCarById(carID);
+        return ResponseEntity.ok(deletedCar.getBrand() + " " + deletedCar.getModel() + " deleted");
     }
 
     @PutMapping("/updateAll/{id}")
