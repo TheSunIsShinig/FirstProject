@@ -7,13 +7,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.example.service.HumanService;
 import org.example.service.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import java.io.IOException;
 
 
@@ -21,13 +21,11 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JWTService jwtService;
-    //private final ApplicationContext context;
     private final HumanService humanService;
 
     @Autowired
-    public JwtFilter(JWTService jwtService, /*ApplicationContext context,*/ HumanService humanService){
+    public JwtFilter(JWTService jwtService, HumanService humanService){
         this.jwtService = jwtService;
-        //this.context = context;
         this.humanService = humanService;
     }
 
@@ -45,8 +43,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = humanService.loadUserByUsername(username);
-            //UserDetails userDetails = context.getBean(HumanService.class).loadUserByUsername(username);
-
             if(jwtService.validateToken(token, userDetails)){
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
