@@ -21,12 +21,14 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JWTService jwtService;
-    private final ApplicationContext context;
+    //private final ApplicationContext context;
+    private final HumanService humanService;
 
     @Autowired
-    public JwtFilter(JWTService jwtService, ApplicationContext context){
+    public JwtFilter(JWTService jwtService, /*ApplicationContext context,*/ HumanService humanService){
         this.jwtService = jwtService;
-        this.context = context;
+        //this.context = context;
+        this.humanService = humanService;
     }
 
     @Override
@@ -42,7 +44,8 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = context.getBean(HumanService.class).loadUserByUsername(username);
+            UserDetails userDetails = humanService.loadUserByUsername(username);
+            //UserDetails userDetails = context.getBean(HumanService.class).loadUserByUsername(username);
 
             if(jwtService.validateToken(token, userDetails)){
                 UsernamePasswordAuthenticationToken authToken =

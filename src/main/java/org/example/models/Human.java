@@ -15,9 +15,7 @@ import java.util.*;
 public class Human implements Trade {
 
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.AUTO
-    )
+    @GeneratedValue(strategy = GenerationType.AUTO)
 
     @Getter
     @JsonProperty("human_id")
@@ -25,6 +23,8 @@ public class Human implements Trade {
 
     @Getter @Setter private String username;
     @Getter @Setter private String password;
+    @Setter @Getter private String name;
+    @Setter @Getter private int money;
     @Getter @Setter private LinkedList<String> purchaseHistory;
 
 
@@ -33,13 +33,10 @@ public class Human implements Trade {
     @JsonManagedReference
     private List<Car> humanCars = new ArrayList<>();
 
-    @Setter @Getter private String name;
-    @Setter @Getter private int money;
 
-    public Human( String name, int money, LinkedList<String> purchaseHistory){
+    public Human( String name, int money){
         this.name = name;
         this.money = money;
-        this.purchaseHistory = purchaseHistory;
     }
 
     @Override

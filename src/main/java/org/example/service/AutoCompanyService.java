@@ -1,6 +1,6 @@
 package org.example.service;
 
-import org.example.models.AutoCompany;;
+import org.example.models.AutoCompany;
 import org.example.models.Car;
 import org.example.models.Human;
 import org.example.repository.AutoCompaniesRepository;
